@@ -7,7 +7,7 @@ dependency_dag = nx.DiGraph()
 
 def deploy_command(rg_name, service):
     extra_vars = '--extra-vars "service_name={} jira_item={}"'.format(service, rg_name)
-    command = "docker exec -it jira_cd bash -c 'ansible-playbook /opt/ncs/gwaas_azure_gov/trigger_rundeck_job.yml -vvv --vault-id dev@/opt/ncs/gwaas_azure_gov/.vault_pass.txt {}'".format(extra_vars)
+    command = "bash deploy.sh"
     print('Running command:', command)
     try:
         subproc.check_call(command, shell=True)
