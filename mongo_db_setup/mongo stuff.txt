@@ -1,0 +1,31 @@
+//start without access control
+
+use admin
+db.createUser(
+   {
+     user: 'admin',
+     pwd: 'password',
+     roles: [ { role: 'root', db: 'admin' } ]
+   }
+ );
+
+db.createUser(
+   {	
+       user: "panos",
+	   pwd: "papathanas",
+	   roles:[{role: "userAdminAnyDatabase" , db:"admin"}, "readWriteAnyDatabase"]
+    }
+)
+
+// enable access control, replication and restart
+
+nano /etc/mongod.conf
+systemctl restart mongod
+
+db.auth("admin","password")
+
+rs.initiate()
+
+db.auth("panos","papathanas")
+
+// now also map the mongo ip to the public interface in the conf and restart
