@@ -43,7 +43,6 @@ def deployRG(rg_name, services, rg_owner=None):
                 break
 
         if ok_to_deploy:
-            # JIRA_ITEM: ngs1
             to_deploy = currently_deploying
             if to_deploy == 'data pop':
                 to_deploy = 'newrg'
@@ -52,10 +51,7 @@ def deployRG(rg_name, services, rg_owner=None):
 
             rg_name_deploy = rg_name.lower().replace('-', '')
 
-            # Run the deployment command
             print("Deploying : "+to_deploy+" for RG : "+rg_name_deploy)
-            # result = deploy_command(rg_name_deploy, to_deploy)
-            # print('Deployment result:', result)
             deployed_dependencies.append(currently_deploying)
         else:
             dependencies_to_deploy.append(currently_deploying)
@@ -68,9 +64,6 @@ def preprocessing():
     deployable_services = getCollection("test","available_services")
     
     for service in deployable_services:
-        # script that can deploy the service
-
-        # dependencies of the service
         dependency_dag.add_node(service["serviceName"].lower())
         if "requires" in service:
             print("Dependencies for service : "+service["serviceName"].lower() +" : "+ str(service["requires"]).lower())
@@ -79,13 +72,10 @@ def preprocessing():
         else:
             print("No dependencies for service : "+service["serviceName"])
 
-    # visualizeDependencyGraph()
-
 preprocessing()
 
 if __name__ == '__main__':
     while True:
-        #unprocessed_items = getCollection("test","services_rg_queue",{"creationStatus":"create"})
         unprocessed_items = watchCollection("test","services_rg_queue")
         print("Watching collection services_rg_queue in test db")
         for item in unprocessed_items:
@@ -99,17 +89,13 @@ if __name__ == '__main__':
 
             print("Processing : "+str(item))
             item["creationStatus"]="inprogress"
-            #updateItem("test","services_rg_queue",item)
             
-            # do stuff here
             try :
-            #if True:
                 rg_owner = None
                 if "assignee" in item:
                     rg_owner = item["assignee"]
                 deployRG( item["resourceGroupName"], item["serviceName"], rg_owner)
                 item["creationStatus"]="done"
-                #updateItem("test","services_rg_queue",item)
             except Exception as e:
                 traceback.print_exc()
                 print("Deployment of item : "+str(item)+" failed because of : "+str(e))
