@@ -1,0 +1,83 @@
+#* @vtlvariable name="table_data" type="java.lang.Array" *#
+#* @vtlvariable name="graph_data" type="java.lang.String" *#
+
+<style>
+    .graph {
+        width: 100%;
+        min-height: 400px;
+    }
+
+    svg {
+      border: 1px solid #999;
+      overflow: hidden;
+    }
+
+    .node {
+      white-space: nowrap;
+    }
+
+    .node rect,
+    .node circle,
+    .node ellipse {
+      stroke: #333;
+      fill: #fff;
+      stroke-width: 1.5px;
+    }
+
+    .cluster rect {
+      stroke: #333;
+      fill: #000;
+      fill-opacity: 0.1;
+      stroke-width: 1.5px;
+    }
+
+    .edgePath path.path {
+      stroke: #333;
+      stroke-width: 1.5px;
+      fill: none;
+    }
+</style>
+
+<table class="aui">
+    <tr>
+        <th>Resource Group Name</th>
+        <th>Start time</th>
+        <th>Stop time</th>
+        <th>Cost</th>
+    </tr>
+#foreach ($row in $data)
+#set ($url = $row.getString("url"))
+    <tr>
+        <td><a target="_blank" href="$url">$row.getString("rg_name")</a></td>
+        <td>$row.getString("start")</td>
+        <td>$row.getString("end")</td>
+        <td>$row.getString("cost")</td>
+    </tr>
+#end
+</table>
+
+<h2>Resource Group Dependency Graph</h2>
+<svg class="graph">
+  <g />
+</svg>
+
+<script src="https://cdn.jsdelivr.net/npm/graphlib@2.1.8/dist/graphlib.min.js" integrity="sha256-nJGj6V79LCofErPY641eliZut/vRRKu/10bmn6uopW0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.15.0/d3.min.js" integrity="sha256-m0QmIsBXcOMiETRmpT3qg2IQ/i0qazJA2miCHzOmS1Y=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dagre-d3/0.6.4/dagre-d3.min.js" integrity="sha256-dPm4TA8Y9PY5q5mmtWMkRGOCMHJDKy34ZrxdbBGA9cs=" crossorigin="anonymous"></script>
+<script>
+    var graphData = JSON.parse('$graph_data'.replace(/&quot;/g, '"'));
+    console.log(graphData);
+
+    var g = graphlib.json.read(graphData);
+    g.setGraph({label: ""});
+
+    var svg = d3.select(".graph");
+    var inner = d3.select("svg g");
+    var zoom = d3.zoom().on("zoom", function() {
+      inner.attr("transform", d3.event.transform);
+    });
+    svg.call(zoom);
+
+    var render = dagreD3.render();
+    d3.select("svg g").call(render, g);
+</script>

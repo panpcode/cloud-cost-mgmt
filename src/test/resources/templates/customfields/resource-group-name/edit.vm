@@ -1,0 +1,17 @@
+#* @vtlvariable name="availableRGs" type="java.util.Arrays" *#
+#* @vtlvariable name="rgsMap" type="java.util.HashMap" *#
+#* @vtlvariable name="selectedRG" type="java.lang.String" *#
+#controlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters.noHeader)
+
+<select name="$customField.id" id="$customField.id" class="select rg-name">
+    <option value="">Not applicable</option>
+#foreach ($entry in $availableRGs)
+    #if ($selectedRG == $entry)
+        <option selected="selected" name="$entry" value="$rgsMap.get($entry)">$entry</option>
+    #else
+        <option name="$entry" value="$rgsMap.get($entry)">$entry</option>
+    #end
+#end
+</select>
+
+#controlFooter ($action $fieldLayoutItem.fieldDescription $displayParameters.noHeader)
