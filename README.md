@@ -1,11 +1,8 @@
-# mscproject
-MSc Project: Automated management of cloud resources based on project management tools by Panagiotis Papathanasopoulos
+# Project
+Automated management of cloud resources based on project management tools by Panagiotis Papathanasopoulos
 
 # Student
 Panagiotis Papathanasopoulos
-
-# Supervisor
-Olivia Brickley
 
 # University
 Munster Technological University
